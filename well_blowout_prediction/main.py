@@ -16,7 +16,7 @@ def load_config(config_path='configs/config.json'):
     return config
 
 def main():
-    # بارگذاری تنظیمات
+    
     config = load_config()
     print("Config Loaded: ", config)
 
