@@ -1,0 +1,17 @@
+{
+    "data_dir": "data",
+    "raw_data_path": "data/raw/sensor_data.csv",
+    "processed_data_path": "data/processed",
+    "model_type": "LSTM",
+    "results_dir": "results",
+    "logs_dir": "logs",
+    "batch_size": 32,
+    "epochs": 50,
+    "learning_rate": 0.001,
+    "validation_split": 0.2,
+    "random_seed": 42,
+    "checkpoint_dir": "checkpoints",
+    "early_stopping": true,
+    "monitor_metric": "val_loss",
+    "model_save_path": "results/trained_model.h5"
+}

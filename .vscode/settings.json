@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./well_blowout_prediction/models"
+    ]
+}
