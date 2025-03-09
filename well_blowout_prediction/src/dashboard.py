@@ -57,7 +57,7 @@ def update_dashboard(n):
     flow_rate_fig = px.line(df, x='time', y='flow_rate', title='Flow Rate Over Time')
     vibration_fig = px.line(df, x='time', y='vibration', title='Vibration Over Time')
     
-    # بررسی هشدارها
+
     alerts = []
     thresholds = {"pressure": 50, "temperature": 10, "flow_rate": 80, "vibration": 0.5}
     latest = df.iloc[-1] if not df.empty else None
