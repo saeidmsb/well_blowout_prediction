@@ -11,7 +11,20 @@ DATA_FILE = "C:/Users/Basseri/Desktop/well_blowout_prediction/data/processed/pro
 
 def load_data():
     if os.path.exists(DATA_FILE):
-        return pd.read_csv(DATA_FILE)
+        df = pd.read_csv(DATA_FILE)
+        
+       
+        if "timestamp" in df.columns:
+            df.rename(columns={"timestamp": "time"}, inplace=True)
+
+        df["time"] = pd.to_datetime(df["time"])
+        
+        print("Data file loaded.")
+        print(df.head())  
+        
+        return df
+    
+    print("⚠️ Data does not find. ")
     return pd.DataFrame(columns=["time", "pressure", "temperature", "flow_rate", "vibration"])
 
 
@@ -20,16 +33,15 @@ df = load_data()
 
 app = dash.Dash(__name__)
 
-
 app.layout = html.Div([
     html.H1("⛽ Well Monitoring Dashboard", style={'textAlign': 'center'}),
-    
+
     dcc.Interval(
         id='interval-component',
         interval=5000, 
         n_intervals=0
     ),
-    
+
     dcc.Graph(id='pressure-graph'),
     dcc.Graph(id='temperature-graph'),
     dcc.Graph(id='flow-rate-graph'),
@@ -49,9 +61,11 @@ app.layout = html.Div([
 )
 def update_dashboard(n):
     df = load_data()
+    
     if df.empty:
         return px.line(), px.line(), px.line(), px.line(), "No data available."
     
+ 
     pressure_fig = px.line(df, x='time', y='pressure', title='Pressure Over Time')
     temperature_fig = px.line(df, x='time', y='temperature', title='Temperature Over Time')
     flow_rate_fig = px.line(df, x='time', y='flow_rate', title='Flow Rate Over Time')
@@ -65,9 +79,9 @@ def update_dashboard(n):
     if latest is not None:
         for sensor, limit in thresholds.items():
             if latest[sensor] > limit:
-                alerts.append(f"⚠️ ALERT: {sensor} is above threshold ({latest[sensor]} > {limit})")
+                alerts.append(f"⚠️ ALERT: {sensor} is above threshold ({latest[sensor]:.2f} > {limit})")
     
-    return pressure_fig, temperature_fig, flow_rate_fig, vibration_fig, html.Br().join(alerts) if alerts else "✅ All sensors are normal."
+    return pressure_fig, temperature_fig, flow_rate_fig, vibration_fig, html.Br().join(alerts) if alerts else " All sensors are normal."
 
 
 if __name__ == '__main__':
