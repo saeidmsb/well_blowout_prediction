@@ -4,6 +4,7 @@ import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 
 from well_blowout_prediction.models.lstm_model import LSTMModel
+# from models.lstm_model import LSTMModel
 
 
 def load_model(model_path, model_class, input_size, hidden_layer_size=50):
@@ -45,5 +46,5 @@ def predict_blowout(model_path, input_data_path, model_class, sequence_length=60
 
 if __name__ == "__main__":
     model_file = './models/lstm_model.pth' 
-    input_file = './data/processed/processed_data_with_features.csv'  
+    input_file = './data/processed/processed_data.csv'  
     predict_blowout(model_file, input_file, LSTMModel)  

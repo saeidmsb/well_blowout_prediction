@@ -1,0 +1,46 @@
+# Python bytecode files
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment directories
+*/venv/
+env/
+.venv/
+.env/
+
+# Distribution / packaging
+*.egg
+*.egg-info/
+dist/
+data/
+build/
+*.whl
+venv_sklearn/*
+# IDE files
+.vscode/
+.idea/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Python coverage directory
+.coverage
+.coverage.*
+*.cover
+
+# Logs
+*.log
+
+# Temporary files
+*.bak
+*.swp
+
+well_blowout_prediction/src/__pycache__/
+well_blowout_prediction/src/__pycache__/
+well_blowout_prediction/models/
+well_blowout_prediction/configs/
+well_blowout_prediction/notebooks/
+well_blowout_prediction/src/
+
+well_blowout_prediction/*.pyc

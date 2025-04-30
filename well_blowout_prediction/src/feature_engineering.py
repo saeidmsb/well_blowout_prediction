@@ -20,6 +20,6 @@ def feature_engineering(input_path, output_path):
     print(f"Feature engineering completed and saved to {output_path}")
 
 if __name__ == "__main__":
-    input_file = './data/processed/processed_data.csv' 
+    input_file = './data/raw/sensor_data.csv' 
     output_file = './data/processed/processed_data_with_features.csv'  
     feature_engineering(input_file, output_file)

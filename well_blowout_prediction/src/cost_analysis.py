@@ -62,7 +62,7 @@ def calculate_downtime_cost(df):
 
 def main():
    
-    file_path = "C:/Users/Basseri/Desktop/well_blowout_prediction/data/processed/processed_data.csv"  
+    file_path = "./data/processed/processed_data.csv"  
     df = load_sensor_data(file_path)
 
   

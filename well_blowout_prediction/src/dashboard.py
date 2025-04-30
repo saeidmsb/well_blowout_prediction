@@ -6,7 +6,7 @@ import plotly.express as px
 import os
 
 
-DATA_FILE = "C:/Users/Basseri/Desktop/well_blowout_prediction/data/processed/processed_data.csv"
+DATA_FILE = "./data/processed/processed_data.csv"
 
 
 def load_data():

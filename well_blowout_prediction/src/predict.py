@@ -28,7 +28,7 @@ def load_scaler(scaler_path="models/scaler.pkl"):
         print("Scaler not found, returning data unchanged.")
         return None
 
-def predict(data, model_path="models/lstm_model.pth", sequence_length=50, threshold=0.5, scaler_path="models/scaler.pkl"):
+def predict(data, model_path="models/lstm_model.pth", sequence_length=50, threshold=0.4, scaler_path="models/scaler.pkl"):
     
     
     if isinstance(data, str):
@@ -38,7 +38,7 @@ def predict(data, model_path="models/lstm_model.pth", sequence_length=50, thresh
     else:
         raise ValueError("Data must be a DataFrame.")
 
-    #
+    
     scaler = load_scaler(scaler_path)
     if scaler is not None and hasattr(scaler, "transform"):
         df[df.columns] = scaler.transform(df)
@@ -51,22 +51,24 @@ def predict(data, model_path="models/lstm_model.pth", sequence_length=50, thresh
     input_size = X.shape[2]
 
     
-    model = LSTMModel(input_size=input_size, hidden_layer_size=128).to(device)
+    model = LSTMModel(input_size=input_size, hidden_layer_size=50).to(device)
     model.load_state_dict(torch.load(model_path, map_location=device, weights_only=True))
     model.eval()
 
     
     with torch.no_grad():
-        predictions = model(X).cpu().numpy()
+      raw_output = model(X)                      
+      predictions = raw_output.cpu().numpy()     
+
 
     
     mean_pred = np.mean(predictions)
     var_pred = np.var(predictions)
     
-    print(f"📊 Mean prediction: {mean_pred:.4f}")
-    print(f"📉 Prediction variance: {var_pred:.4f}")
+    print(f" Mean prediction: {mean_pred:.4f}")
+    print(f" Prediction variance: {var_pred:.4f}")
 
-    # 
+    
     labels = (predictions > threshold).astype(int)
 
     
@@ -74,7 +76,7 @@ def predict(data, model_path="models/lstm_model.pth", sequence_length=50, thresh
     df_predictions.to_csv("predictions.csv", index=False)
     print("Predictions saved to predictions.csv file.")
 
-    # 
+     
     plt.hist(predictions, bins=20, edgecolor='black')
     plt.xlabel("Predicted values")
     plt.ylabel("Number")
@@ -89,8 +91,8 @@ if __name__ == "__main__":
     df = load_sensor_data(data_path)
 
     predictions, labels = predict(df)
-    print("📊 A sample of model predictions:\n", predictions[:10])
-    print("🔹 A sample of decision labels.:\n", labels[:10])
+    print(" A sample of model predictions:\n", predictions[:10])
+    print(" A sample of decision labels.:\n", labels[:10])
     
-    print(f"📊 Minimum predicted value: {predictions.min():.4f}")
-    print(f"📊 Maximum predicted value: {predictions.max():.4f}")
+    print(f" Minimum predicted value: {predictions.min():.4f}")
+    print(f" Maximum predicted value: {predictions.max():.4f}")

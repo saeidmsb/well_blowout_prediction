@@ -5,8 +5,9 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 import pandas as pd  
+import joblib
 
-# 
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'models')))
 
 
@@ -17,6 +18,21 @@ from cnn_model import CNNModel
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+def load_scaler():
+    """Load the scaler and scaled columns from the models directory."""
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    scaler_path = os.path.abspath(os.path.join(base_dir, '..', '..', 'models', 'scaler.pkl'))
+
+    print(f" Trying to load scaler from: {scaler_path}")
+
+    if os.path.exists(scaler_path):
+        print(" Scaler found and loaded.")
+        scaler_bundle = joblib.load(scaler_path)
+        return scaler_bundle['scaler'], scaler_bundle['columns']
+    else:
+        print(" Scaler not found, returning None.")
+        return None, None
 
 def train_model(data, sequence_length=50, model_type="LSTM", epochs=10, batch_size=32, learning_rate=0.001, hidden_layer_size=64):
     
@@ -29,7 +45,15 @@ def train_model(data, sequence_length=50, model_type="LSTM", epochs=10, batch_si
     else:
         raise ValueError("Data must be a DataFrame.")
 
-    # 
+    
+    scaler, scaled_columns = load_scaler()
+    if scaler and scaled_columns:
+        print(" Scaling data using loaded scaler...")
+        df[scaled_columns] = scaler.transform(df[scaled_columns])
+    else:
+        print(" Data will not be scaled.")
+
+    
     sequences, labels = create_sequences(df, sequence_length)
 
     
@@ -56,7 +80,7 @@ def train_model(data, sequence_length=50, model_type="LSTM", epochs=10, batch_si
     else:
         raise ValueError("Invalid model type. Use 'LSTM' or 'CNN'.")
 
-    #
+    
     criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
@@ -81,7 +105,7 @@ def train_model(data, sequence_length=50, model_type="LSTM", epochs=10, batch_si
     torch.save(model.state_dict(), model_save_path)
     print(f" models saved : {model_save_path}")
 
-    #
+    
     model.eval()
     total_test_loss = 0
     with torch.no_grad():
@@ -91,7 +115,7 @@ def train_model(data, sequence_length=50, model_type="LSTM", epochs=10, batch_si
             loss = criterion(output, y_batch)
             total_test_loss += loss.item()
 
-    print(f"📊 Test Loss: {total_test_loss / len(test_loader):.4f}")
+    print(f" Test Loss: {total_test_loss / len(test_loader):.4f}")
 
     return model
 
